@@ -1,0 +1,9 @@
+name: stock_anamoly_detection
+language: python
+variables:
+  - name: stocks
+    inputType: OutputTopic
+    defaultValue: stocks
+dockerfile: dockerfile
+runEntryPoint: main.py
+defaultFile: main.py
