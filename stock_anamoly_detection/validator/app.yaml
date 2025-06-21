@@ -1,0 +1,12 @@
+name: validator
+language: python
+variables:
+  - name: input_topic
+    inputType: InputTopic
+    defaultValue: stocks
+  - name: output_topic
+    inputType: OutputTopic
+    defaultValue: validated_stocks
+dockerfile: dockerfile
+runEntryPoint: main.py
+defaultFile: main.py

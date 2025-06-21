@@ -1,5 +1,5 @@
-pandas
-zstandard
 quixstreams
 tqdm
 python-dotenv
+pandas
+zstandard

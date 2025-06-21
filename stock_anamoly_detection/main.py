@@ -1,6 +1,10 @@
 from quixstreams import Application  # import the Quix Streams modules for interacting with Kafka
 import os
 from dotenv import load_dotenv, find_dotenv
+import glob
+import tqdm
+import pandas as pd
+import json
 
 # Dynamically select .env file based on ENV (dev, prod, etc.)
 #DOTENV_FILE = os.getenv("ENV_FILE", ".env")
@@ -10,28 +14,35 @@ DOTENV_FILE = ".env"
 load_dotenv(find_dotenv(DOTENV_FILE), override=False)
 
 
-app = Application()  # create an Application
+app = Application(auto_create_topics=True)  # create an Application
 
 # stocks - OutputTopic
-stocks = app.topic(os.environ["stocks"])
-
-# input_topic = app.topic("input-topic-name")
+topic = app.topic(os.environ["stocks"])
 
 def main():
-    """
-    Your code goes here.
-    See the Quix Streams documentation for more examples:
-    https://quix.io/docs/quix-streams/quickstart.html
-    """
+    # make the path not relative
+    data_files = glob.glob("data/*zst")
+    print(f"len(data_files) {len(data_files)}")
 
-    # Process incoming data using Streaming DataFrame
-    # sdf = app.dataframe(input_topic)
+    with app.get_producer() as producer:
+        
+        for file_path in tqdm.tqdm(data_files):
+            print(f"Processing files {file_path}")
 
-    # Print incoming data
-    # sdf.print()
+            data = pd.read_csv(file_path)
 
-    # Produce data to the output topic
-    # sdf = sdf.to_topic(stocks)
+            for _, row in data.iterrows():
+                single_row = row.to_dict()
+                json_row = json.dumps(single_row)
+
+                producer.produce(
+                    topic = topic.name,
+                    key=single_row['symbol'],
+                    value=json_row
+                )
+
+            
+
 
     # Run the app
     # app.run(sdf)

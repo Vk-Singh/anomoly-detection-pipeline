@@ -1,0 +1,12 @@
+name: detector
+language: python
+variables:
+  - name: input_topic
+    inputType: InputTopic
+    defaultValue: validated_stocks
+  - name: output_topic
+    inputType: OutputTopic
+    defaultValue: detected_stocks
+dockerfile: dockerfile
+runEntryPoint: main.py
+defaultFile: main.py
